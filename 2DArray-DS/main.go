@@ -1,19 +1,21 @@
 package main
 
 import (
-    "bufio"
-    "fmt"
-    "io"
-    "os"
-    "strconv"
-    "strings"
-    "errors"
+	"bufio"
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"sort"
+	"strconv"
+	"strings"
 )
 
 const (
-    HourGlassWidth int = 3
-    HourGlassHeight int = 3
+	HourGlassWidth  int = 3
+	HourGlassHeight int = 3
 )
+
 /*
  * Complete the 'hourglassSum' function below.
  *
@@ -22,94 +24,119 @@ const (
  */
 
 func hourglassSum(arr [][]int32) int32 {
-    // Write your code here
-    return 0
+	// Write your code here
+	sums := []int32{}
+
+	arrColNum := len(arr[0])
+	arrRowNum := len(arr)
+
+	for row := 0; row < arrRowNum-HourGlassHeight+1; row++ {
+		for col := 0; col < arrColNum-HourGlassWidth+1; col++ {
+			hourGlassElems, err := getHourGlassElems(arr, row, col)
+			if err != nil {
+				return 0
+			}
+			sum := sumInt32Arr(hourGlassElems)
+			sums = append(sums, sum)
+		}
+	}
+
+	sort.Slice(sums, func(i, j int) bool { return sums[i] > sums[j] })
+	return sums[0]
 }
 
 func getHourGlassElems(arr [][]int32, row, col int) ([]int32, error) {
-    // check the number of columns.
-    var elemNum int
-    for i, row := range arr {
-        if i == 0 {
-            elemNum = len(row)
-            continue
-        }
-        if elemNum != len(row) {
-            return nil, errors.New("invalid array")
-        }
-    }
+	// check the number of columns.
+	var elemNum int
+	for i, row := range arr {
+		if i == 0 {
+			elemNum = len(row)
+			continue
+		}
+		if elemNum != len(row) {
+			return nil, errors.New("invalid array")
+		}
+	}
 
-    arrColNum := elemNum
-    arrRowNum := len(arr)
+	arrColNum := elemNum
+	arrRowNum := len(arr)
 
-    // check the target hourglass is valid.
-    if arrColNum - col < HourGlassWidth - 1 {
-        return nil, errors.New("out of range of hourglass width")
-    }
-    if arrRowNum - row < HourGlassHeight - 1 {
-        return nil, errors.New("out of range of hourglass height")
-    }
+	// check the target hourglass is valid.
+	if arrColNum-col < HourGlassWidth-1 {
+		return nil, errors.New("out of range of hourglass width")
+	}
+	if arrRowNum-row < HourGlassHeight-1 {
+		return nil, errors.New("out of range of hourglass height")
+	}
 
-    var result []int32
+	var result []int32
 
-    result = append(result, arr[row][col])
-    result = append(result, arr[row][col+1])
-    result = append(result, arr[row][col+2])
-    result = append(result, arr[row+1][col+1])
-    result = append(result, arr[row+2][col])
-    result = append(result, arr[row+2][col+1])
-    result = append(result, arr[row+2][col+2])
+	result = append(result, arr[row][col])
+	result = append(result, arr[row][col+1])
+	result = append(result, arr[row][col+2])
+	result = append(result, arr[row+1][col+1])
+	result = append(result, arr[row+2][col])
+	result = append(result, arr[row+2][col+1])
+	result = append(result, arr[row+2][col+2])
 
-    return result, nil
+	return result, nil
+}
+
+func sumInt32Arr(arr []int32) int32 {
+	var result int32 = 0
+	for _, e := range arr {
+		result += e
+	}
+	return result
 }
 
 func main() {
-    reader := bufio.NewReaderSize(os.Stdin, 16 * 1024 * 1024)
+	reader := bufio.NewReaderSize(os.Stdin, 16*1024*1024)
 
-    stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
-    checkError(err)
+	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
+	checkError(err)
 
-    defer stdout.Close()
+	defer stdout.Close()
 
-    writer := bufio.NewWriterSize(stdout, 16 * 1024 * 1024)
+	writer := bufio.NewWriterSize(stdout, 16*1024*1024)
 
-    var arr [][]int32
-    for i := 0; i < 6; i++ {
-        arrRowTemp := strings.Split(strings.TrimRight(readLine(reader)," \t\r\n"), " ")
+	var arr [][]int32
+	for i := 0; i < 6; i++ {
+		arrRowTemp := strings.Split(strings.TrimRight(readLine(reader), " \t\r\n"), " ")
 
-        var arrRow []int32
-        for _, arrRowItem := range arrRowTemp {
-            arrItemTemp, err := strconv.ParseInt(arrRowItem, 10, 64)
-            checkError(err)
-            arrItem := int32(arrItemTemp)
-            arrRow = append(arrRow, arrItem)
-        }
+		var arrRow []int32
+		for _, arrRowItem := range arrRowTemp {
+			arrItemTemp, err := strconv.ParseInt(arrRowItem, 10, 64)
+			checkError(err)
+			arrItem := int32(arrItemTemp)
+			arrRow = append(arrRow, arrItem)
+		}
 
-        if len(arrRow) != 6 {
-            panic("Bad input")
-        }
+		if len(arrRow) != 6 {
+			panic("Bad input")
+		}
 
-        arr = append(arr, arrRow)
-    }
+		arr = append(arr, arrRow)
+	}
 
-    result := hourglassSum(arr)
+	result := hourglassSum(arr)
 
-    fmt.Fprintf(writer, "%d\n", result)
+	fmt.Fprintf(writer, "%d\n", result)
 
-    writer.Flush()
+	writer.Flush()
 }
 
 func readLine(reader *bufio.Reader) string {
-    str, _, err := reader.ReadLine()
-    if err == io.EOF {
-        return ""
-    }
+	str, _, err := reader.ReadLine()
+	if err == io.EOF {
+		return ""
+	}
 
-    return strings.TrimRight(string(str), "\r\n")
+	return strings.TrimRight(string(str), "\r\n")
 }
 
 func checkError(err error) {
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 }
