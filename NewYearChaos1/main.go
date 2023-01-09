@@ -103,14 +103,6 @@ func findIdxByValInt(slPtr *[]int, v int) (int, error) {
 	return -1, errors.New("not found")
 }
 
-func sumIntSlice(sl []int) int {
-	result := 0
-	for _, v := range sl {
-		result += v
-	}
-	return result
-}
-
 func countBribeNum(currQ []int, targetQ []int, bribeOrder []int) map[int]int {
 	result := map[int]int{}
 
