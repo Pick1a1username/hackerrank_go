@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -20,7 +21,81 @@ import (
 
 func maximumToys(prices []int32, k int32) int32 {
 	// Write your code here
+	return maximumToysImpl(prices, k)
+}
 
+func maximumToysImpl(prices []int32, k int32) int32 {
+	// generate possible combinations.
+	combinations := genPossibleCombinations(prices)
+	// clean up combinations
+	combinations = removeDup(combinations)
+	// return max items.
+	return getMaxItemNum(combinations, k)
+}
+
+func getMaxItemNum(arr [][]int32, k int32) int32 {
+	max := 0
+	for _, a := range arr {
+		sum := sumArrInt32(a)
+		if sum <= k && max < len(a) {
+			max = len(a)
+		}
+	}
+	return int32(max)
+}
+
+func sumArrInt32(arr []int32) int32 {
+	sum := int32(0)
+	for i := 0; i < len(arr); i++ {
+		sum += arr[i]
+	}
+	return sum
+}
+
+func genPossibleCombinations(prices []int32) [][]int32 {
+	result := [][]int32{}
+	for i, p := range prices {
+		result = append(result, []int32{p})
+
+		// Get the rest of prices.
+		// append() modify source slice.
+		tmpPrices := append([]int32{}, prices...)
+		subPrices := append(tmpPrices[:i], tmpPrices[i+1:]...)
+		for _, subResultOne := range genPossibleCombinations(subPrices) {
+			subResult := append([]int32{p}, subResultOne...)
+			result = append(result, subResult)
+		}
+
+	}
+	return result
+}
+
+func sortArrayAscInt32(arr []int32) []int32 {
+	sort.Slice(arr, func(i, j int) bool { return arr[i] < arr[j] })
+	return arr
+}
+
+func arrayInt32ToString(arr []int32) []string {
+	result := []string{}
+	for _, v := range arr {
+		result = append(result, fmt.Sprintf("%d", v))
+	}
+	return result
+}
+
+func removeDup(arr [][]int32) [][]int32 {
+	elemMap := map[string][]int32{}
+	for _, a := range arr {
+		sorted := sortArrayAscInt32(a)
+		elemMap[strings.Join(arrayInt32ToString(sorted), "_")] = a
+	}
+
+	result := [][]int32{}
+	for _, v := range elemMap {
+		result = append(result, v)
+	}
+
+	return result
 }
 
 func main() {
