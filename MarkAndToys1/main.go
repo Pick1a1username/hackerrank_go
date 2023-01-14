@@ -34,20 +34,21 @@ func maximumToysImpl(prices []int32, k int32) int32 {
 }
 
 func getMaxItemNum(arr [][]int32, k int32) int32 {
+	kUint64 := uint64(k)
 	max := 0
 	for _, a := range arr {
 		sum := sumArrInt32(a)
-		if sum <= k && max < len(a) {
+		if sum <= kUint64 && max < len(a) {
 			max = len(a)
 		}
 	}
 	return int32(max)
 }
 
-func sumArrInt32(arr []int32) int32 {
-	sum := int32(0)
+func sumArrInt32(arr []int32) uint64 {
+	sum := uint64(0)
 	for i := 0; i < len(arr); i++ {
-		sum += arr[i]
+		sum += uint64(arr[i])
 	}
 	return sum
 }
