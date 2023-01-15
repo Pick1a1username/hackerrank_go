@@ -23,29 +23,27 @@ func makeAnagram(a string, b string) int32 {
 	bMap := convertStringToMap(b)
 
 	deleteCount := 0
-	for k, v := range aMap {
-		bValue := bMap[k]
-		if bValue > v {
-			deleteCount += bValue - v
-			bMap[k] = v
-		} else if bValue < v {
-			deleteCount += v - bValue
-			aMap[k] = bValue
-		}
-	}
-
-	for k, v := range bMap {
-		aValue := aMap[k]
-		if aValue > v {
-			deleteCount += aValue - v
-			aMap[k] = v
-		} else if aValue < v {
-			deleteCount += v - aValue
-			bMap[k] = aValue
-		}
-	}
+	deleteCount += equalizeMaps(&aMap, &bMap)
+	deleteCount += equalizeMaps(&bMap, &aMap)
 
 	return int32(deleteCount)
+}
+
+// This function mutates parameters!
+func equalizeMaps(src, dst *map[rune]int) int {
+	deleteCount := 0
+	for k, v := range *src {
+		dstValue := (*dst)[k]
+		if dstValue > v {
+			deleteCount += dstValue - v
+			(*dst)[k] = v
+		} else if dstValue < v {
+			deleteCount += v - dstValue
+			(*src)[k] = dstValue
+		}
+	}
+
+	return deleteCount
 }
 
 func convertStringToMap(s string) map[rune]int {

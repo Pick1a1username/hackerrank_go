@@ -15,6 +15,12 @@ func Test_makeAnagram(t *testing.T) {
 			b:           "abc",
 			answer:      4,
 		},
+		{
+			description: "abccd, abc",
+			a:           "abccd",
+			b:           "abc",
+			answer:      2,
+		},
 	}
 
 	for _, testCase := range testCases {
