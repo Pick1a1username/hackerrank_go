@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -18,14 +19,27 @@ import (
 
 func minimumAbsoluteDifference(arr []int32) int32 {
 	// Write your code here
-	// Generate combinations.
+	// Generate pairs.
+	pairs := genTwoPairs(arr)
 
 	// Calculate differences.
+	diffs := []int32{}
+	for _, p := range pairs {
+		diffs = append(diffs, absInt32(p[0], p[1]))
+	}
 
 	// Get the minimum difference.
+	sort.Slice(diffs, func(i, j int) bool { return diffs[i] < diffs[j] })
 
 	// Return.
-	return 0
+	return diffs[0]
+}
+
+func absInt32(a, b int32) int32 {
+	if a > b {
+		return a - b
+	}
+	return b - a
 }
 
 func genTwoPairs(arr []int32) [][]int32 {
