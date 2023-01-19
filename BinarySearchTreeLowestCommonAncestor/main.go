@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -52,12 +53,7 @@ func lca(root *Node, v1, v2 int32) Node {
 func main() {
 	reader := bufio.NewReaderSize(os.Stdin, 16*1024*1024)
 
-	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
-	checkError(err)
-
-	defer stdout.Close()
-
-	writer := bufio.NewWriterSize(stdout, 16*1024*1024)
+	writer := bufio.NewWriterSize(os.Stdout, 16*1024*1024)
 
 	nTemp, err := strconv.ParseInt(strings.TrimSpace(readLine(reader)), 10, 64)
 	checkError(err)
@@ -74,9 +70,23 @@ func main() {
 		arr = append(arr, arrItem)
 	}
 
-	// result := minimumAbsoluteDifference(arr)
+	vTemps := strings.Split(strings.TrimSpace(readLine(reader)), " ")
+	v1Tmp, err := strconv.ParseInt(vTemps[0], 10, 64)
+	checkError(err)
+	v1 := int32(v1Tmp)
+	v2Tmp, err := strconv.ParseInt(vTemps[1], 10, 64)
+	checkError(err)
+	v2 := int32(v2Tmp)
 
-	// fmt.Fprintf(writer, "%d\n", result)
+	root := Node{
+		Data: arr[0],
+	}
+	for i := 1; i < int(n); i++ {
+		insert(&root, arr[i])
+	}
+	result := lca(&root, v1, v2)
+
+	fmt.Fprintf(writer, "%d\n", result.Data)
 
 	writer.Flush()
 }
