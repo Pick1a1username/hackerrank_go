@@ -2,9 +2,11 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -46,8 +48,50 @@ func genBinaryTree(arr []int32) *Node {
 	return &root
 }
 
-func lca(root *Node, v1, v2 int32) Node {
-	return Node{}
+// If the last element is not target data,
+// it means target data don't exist.
+func getParentData(root *Node, data int32) []int32 {
+	// Find the node of data while collecting node data.
+	result := []int32{root.Data}
+	if root.Data == data {
+		return result
+	}
+	if root.Left != nil && data <= root.Data {
+		return append(result, getParentData(root.Left, data)...)
+	}
+	if root.Right != nil && data > root.Data {
+		return append(result, getParentData(root.Right, data)...)
+	}
+	return result
+}
+
+func lca(root *Node, v1, v2 int32) int32 {
+	// Get parent nodes.
+	v1Parents := getParentData(root, v1)
+	v2Parents := getParentData(root, v2)
+
+	// Get common nodes.
+	sort.Slice(v1Parents, func(i, j int) bool { return v1Parents[i] > v1Parents[j] })
+	sort.Slice(v2Parents, func(i, j int) bool { return v2Parents[i] > v2Parents[j] })
+
+	// Get the minimum node.
+	for i := 0; i < len(v1Parents); i++ {
+		_, err := findIdxByValInt32(&v2Parents, v1Parents[i])
+		if err == nil {
+			return v1Parents[i]
+		}
+	}
+	// Return.
+	return -1
+}
+
+func findIdxByValInt32(slPtr *[]int32, v int32) (int32, error) {
+	for i := 0; i < len(*slPtr); i++ {
+		if (*slPtr)[i] == v {
+			return int32(i), nil
+		}
+	}
+	return -1, errors.New("not found")
 }
 
 func main() {
@@ -86,7 +130,7 @@ func main() {
 	}
 	result := lca(&root, v1, v2)
 
-	fmt.Fprintf(writer, "%d\n", result.Data)
+	fmt.Fprintf(writer, "%d\n", result)
 
 	writer.Flush()
 }
