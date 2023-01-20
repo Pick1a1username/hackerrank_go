@@ -16,7 +16,20 @@ type Node struct {
 }
 
 func getHeight(root *Node) int32 {
-	return 0
+	// If root is nil, return -1
+	if root == nil {
+		return -1
+	}
+	// Get left height.
+	leftHeight := 1 + getHeight(root.Left)
+	// Get right height.
+	rightHeight := 1 + getHeight(root.Right)
+	// return higher value.
+	if leftHeight > rightHeight {
+		return leftHeight
+	} else {
+		return rightHeight
+	}
 }
 
 func insert(root *Node, data int32) *Node {
