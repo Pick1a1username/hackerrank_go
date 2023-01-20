@@ -26,14 +26,10 @@ func insert(root *Node, data int32) *Node {
 		}
 	}
 
-	var cur *Node
-
 	if data <= root.Data {
-		cur = insert(root.Left, data)
-		root.Left = cur
+		root.Left = insert(root.Left, data)
 	} else {
-		cur = insert(root.Right, data)
-		root.Right = cur
+		root.Right = insert(root.Right, data)
 	}
 	return root
 }
@@ -75,11 +71,13 @@ func lca(root *Node, v1, v2 int32) int32 {
 	sort.Slice(v2Parents, func(i, j int) bool { return v2Parents[i] > v2Parents[j] })
 
 	// Get the minimum node.
+	min := int32(-1)
 	for i := 0; i < len(v1Parents); i++ {
 		_, err := findIdxByValInt32(&v2Parents, v1Parents[i])
-		if err == nil {
-			return v1Parents[i]
+		if err != nil {
+			return min
 		}
+		min = v1Parents[i]
 	}
 	// Return.
 	return -1
