@@ -64,8 +64,8 @@ func sortedInsert(llist *DoublyLinkedListNode, data int32) *DoublyLinkedListNode
 				prev: currNode,
 				next: currNode.next,
 			}
-			currNode.next = &newNode
 			currNode.next.prev = &newNode
+			currNode.next = &newNode
 			return llist
 		}
 		currNode = currNode.next
