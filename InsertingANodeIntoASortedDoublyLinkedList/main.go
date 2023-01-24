@@ -30,7 +30,46 @@ func (doublyLinkedList *DoublyLinkedList) insertNodeIntoDoublyLinkedList(nodeDat
 
 func sortedInsert(llist *DoublyLinkedListNode, data int32) *DoublyLinkedListNode {
 	// Write your code here
-	return nil
+	currNode := llist
+	for {
+		if currNode == nil {
+			newNode := DoublyLinkedListNode{
+				data: data,
+				prev: nil,
+				next: nil,
+			}
+			return &newNode
+		}
+		if currNode.prev == nil && data < currNode.data {
+			newNode := DoublyLinkedListNode{
+				data: data,
+				prev: nil,
+				next: currNode,
+			}
+			currNode.prev = &newNode
+			return &newNode
+		}
+		if currNode.next == nil && currNode.data <= data {
+			newNode := DoublyLinkedListNode{
+				data: data,
+				prev: currNode,
+				next: nil,
+			}
+			currNode.next = &newNode
+			return llist
+		}
+		if data >= currNode.data && data < currNode.next.data {
+			newNode := DoublyLinkedListNode{
+				data: data,
+				prev: currNode,
+				next: currNode.next,
+			}
+			currNode.next = &newNode
+			currNode.next.prev = &newNode
+			return llist
+		}
+		currNode = currNode.next
+	}
 }
 
 func main() {}
