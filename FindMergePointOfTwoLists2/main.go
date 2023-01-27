@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -37,53 +36,23 @@ func (singlyLinkedList *SinglyLinkedList) insertNodeIntoSinglyLinkedList(nodeDat
 
 func findMergeNode(head1, head2 *SinglyLinkedListNode) int32 {
 	// Write your code here
+	// https://www.hackerrank.com/challenges/find-the-merge-point-of-two-joined-linked-lists/forum/comments/73211
+	curr1 := head1
+	curr2 := head2
 
-	// Convert list to array.
-	array1 := llistToArray(head1)
-	array2 := llistToArray(head1)
-
-	// Reverse lists.
-	sort.Sort(sort.Reverse(sort.IntSlice(array1)))
-	sort.Sort(sort.Reverse(sort.IntSlice(array2)))
-
-	// Check nodes.
-	prevData := int32(-1)
-	for i := 0; i < len(array1); i++ {
-		if array1[i] != array1[2] {
-			return int32(prevData)
+	for curr1 != curr2 {
+		if curr1.next == nil {
+			curr1 = head2
+		} else {
+			curr1 = curr1.next
 		}
-		prevData = int32(array1[i])
+		if curr2.next == nil {
+			curr2 = head1
+		} else {
+			curr2 = curr2.next
+		}
 	}
-
-	// If both data of nodes are different, previous node is a merge node.
-	return int32(prevData)
-}
-
-func llistToArray(head *SinglyLinkedListNode) []int {
-	currNode := head
-	result := []int{}
-	for currNode != nil {
-		result = append(result, int(currNode.data))
-		currNode = currNode.next
-	}
-	return result
-}
-
-func reverse(llist *SinglyLinkedListNode) *SinglyLinkedListNode {
-	// Write your code here
-	curr := llist.next
-	prev := llist
-	prev.next = nil
-	var newHead *SinglyLinkedListNode
-	for curr != nil {
-		newHead = curr
-		nextCurr := curr.next
-		nextPrev := curr
-		curr.next = prev
-		curr = nextCurr
-		prev = nextPrev
-	}
-	return newHead
+	return curr2.data
 }
 
 func main() {
