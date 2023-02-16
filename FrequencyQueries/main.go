@@ -42,7 +42,9 @@ func freqQuery(queries [][]int32) []int32 {
 					// if the value is equal to the value we are looking for, count it.
 					if data[k] == target {
 						checked[target]++
-						// Do I need to stop if the count is bigger than expected?
+						if checked[target] > v {
+							break
+						}
 					}
 				}
 				// if the counter is equal to v, add 1 to frequencies and break.
