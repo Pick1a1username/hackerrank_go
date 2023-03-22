@@ -1,7 +1,5 @@
 package main
 
-import "sort"
-
 func activityNotifications(expenditure []int32, d int32) int32 {
 	// Write your code here
 
@@ -31,24 +29,31 @@ func activityNotifications(expenditure []int32, d int32) int32 {
 }
 
 func getMedianInt32(arr []int32) float32 {
-	sort.Slice(arr, func(i, j int) bool { return arr[i] < arr[j] })
-	l := len(arr)
-	if l == 0 {
+	// Bubble sort
+	arrLen := len(arr)
+	bubble(&arr)
+
+	if arrLen == 0 {
 		return 0
-	} else if l%2 == 0 {
-		return (float32(arr[l/2-1]) + float32(arr[l/2])) / 2
+	} else if arrLen%2 == 0 {
+		return (float32(arr[arrLen/2-1]) + float32(arr[arrLen/2])) / 2
 	} else {
-		return float32(arr[l/2])
+		return float32(arr[arrLen/2])
 	}
 }
 
 func bubble(arr *[]int32) {
 	// Bubble sort
 	for i := 0; i < len(*arr)-1; i++ {
-		for j := i + 1; j < len(*arr); j++ {
-			if (*arr)[i] > (*arr)[j] {
-				(*arr)[i], (*arr)[j] = (*arr)[j], (*arr)[i]
+		swaped := false
+		for j := 0; j < len(*arr)-1; j++ {
+			if (*arr)[j] > (*arr)[j+1] {
+				(*arr)[j], (*arr)[j+1] = (*arr)[j+1], (*arr)[j]
+				swaped = true
 			}
+		}
+		if !swaped {
+			break
 		}
 	}
 }
