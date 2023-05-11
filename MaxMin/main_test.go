@@ -20,7 +20,7 @@ func Test_maxMin(t *testing.T) {
 			description: "TestCase 2",
 			k:           4,
 			arr:         []int32{1, 2, 3, 4, 10, 20, 30, 40, 100, 200},
-			answer:      8,
+			answer:      3,
 		},
 		{
 			description: "TestCase 3",
