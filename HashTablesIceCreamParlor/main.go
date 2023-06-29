@@ -20,15 +20,17 @@ func whatFlavorsImpl(cost []int32, money int32) []int {
 	}
 
 	// For loop by the map
-	for cost, indexArr := range costMap {
-		remaining := money - cost
-		for indexOfIndex, index := range indexArr {
-			// Make a map without the current cost.
-			tmpCostMap := map[int32][]int{}
-			copyMap(tmpCostMap, costMap)
-			tmpCostMap[cost] = removeElemArrayInt(&indexArr, indexOfIndex)
+	for c, indexArr := range costMap {
+		remaining := money - c
+		if remaining == c && len(indexArr) > 1 {
+			return []int{indexArr[0] + 1, indexArr[1] + 1}
+		}
+		if remaining == c && len(indexArr) == 1 {
+			continue
+		}
+		for _, index := range indexArr {
 			// If a cost for remaining exists, return.
-			if anotherCostIndexArr := tmpCostMap[remaining]; len(anotherCostIndexArr) > 0 {
+			if anotherCostIndexArr := costMap[remaining]; len(anotherCostIndexArr) > 0 {
 				result := []int{index + 1, anotherCostIndexArr[0] + 1}
 				sort.Slice(result, func(i, j int) bool { return result[i] < result[j] })
 				return result
@@ -36,18 +38,4 @@ func whatFlavorsImpl(cost []int32, money int32) []int {
 		}
 	}
 	return []int{-1, -1}
-}
-
-func copyMap(dst, src map[int32][]int) {
-	for k, v := range src {
-		newV := make([]int, len(v))
-		copy(newV, v)
-		dst[k] = newV
-	}
-}
-
-func removeElemArrayInt(arr *[]int, i int) []int {
-	tmpLeftQ := append([]int{}, (*arr)[:i]...)
-	tmpRightQ := append([]int{}, (*arr)[i+1:]...)
-	return append(tmpLeftQ, tmpRightQ...)
 }
