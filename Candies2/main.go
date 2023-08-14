@@ -1,6 +1,13 @@
 package main
 
-const INF int32 = 10 ^ 9 // a number larger than all ratings
+import (
+	"math"
+	"os"
+	"strconv"
+	"strings"
+)
+
+var INF int32 = int32(math.Pow(10, 9)) // a number larger than all ratings
 /*
  * Complete the 'candies' function below.
  *
@@ -22,6 +29,7 @@ func candies(n int32, arr []int32) int64 {
 			candies[i] = 1
 		}
 	}
+	saveCandies(candies, "after_valleys.txt")
 
 	// populate 'rises'
 	for i := 1; i < int(n)+1; i++ {
@@ -29,6 +37,7 @@ func candies(n int32, arr []int32) int64 {
 			candies[i] = candies[i-1] + 1
 		}
 	}
+	saveCandies(candies, "after_rises.txt")
 
 	// populate 'falls'
 	for i := 1; i < int(n)+1; i++ {
@@ -36,6 +45,7 @@ func candies(n int32, arr []int32) int64 {
 			candies[i] = candies[i+1] + 1
 		}
 	}
+	saveCandies(candies, "after_falls.txt")
 
 	// populate 'peaks'
 	for i := 1; i < int(n)+1; i++ {
@@ -43,6 +53,7 @@ func candies(n int32, arr []int32) int64 {
 			candies[i] = maxInt64(candies[i-1], candies[i+1]) + 1
 		}
 	}
+	saveCandies(candies, "after_peaks.txt")
 
 	return sumInt64(candies)
 }
@@ -63,4 +74,27 @@ func sumInt64(arr []int64) int64 {
 		sum = sum + i
 	}
 	return sum
+}
+
+func saveCandies(candies []int64, savePath string) {
+	candiesStrArr := make([]string, len(candies))
+	for i := 0; i < len(candies); i++ {
+		candiesStrArr[i] = strconv.Itoa(int(candies[i]))
+	}
+	candiesStr := strings.Join(candiesStrArr, "\n")
+	f, err := os.Create(savePath)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer f.Close()
+
+	_, err = f.WriteString(candiesStr)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	err = f.Sync()
+	if err != nil {
+		panic(err.Error())
+	}
 }
