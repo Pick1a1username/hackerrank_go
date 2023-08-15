@@ -40,7 +40,7 @@ func candies(n int32, arr []int32) int64 {
 	saveCandies(candies, "after_rises.txt")
 
 	// populate 'falls'
-	for i := 1; i < int(n)+1; i++ {
+	for i := n; i > 0; i-- {
 		if (arr[i-1] >= arr[i]) && (arr[i] > arr[i+1]) {
 			candies[i] = candies[i+1] + 1
 		}
