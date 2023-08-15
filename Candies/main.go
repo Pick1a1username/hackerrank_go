@@ -1,5 +1,11 @@
 package main
 
+import (
+	"os"
+	"strconv"
+	"strings"
+)
+
 /*
  * Complete the 'candies' function below.
  *
@@ -14,6 +20,7 @@ func candies(n int32, arr []int32) int64 {
 	// Initialize the number of candies each student should get.
 	students := make([]int64, n)
 
+	// This loop doesn't work properly if there's consecutive incline or decline.
 	for i := 0; i < int(n)-1; i++ {
 		if students[i] == 0 {
 			students[i]++
@@ -28,10 +35,34 @@ func candies(n int32, arr []int32) int64 {
 			students[i] = students[i+1] + 1
 		}
 	}
+	saveCandies(students, "result.txt")
 
 	count := int64(0)
 	for _, n := range students {
 		count = count + n
 	}
 	return count
+}
+
+func saveCandies(candies []int64, savePath string) {
+	candiesStrArr := make([]string, len(candies))
+	for i := 0; i < len(candies); i++ {
+		candiesStrArr[i] = strconv.Itoa(int(candies[i]))
+	}
+	candiesStr := strings.Join(candiesStrArr, "\n")
+	f, err := os.Create(savePath)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer f.Close()
+
+	_, err = f.WriteString(candiesStr)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	err = f.Sync()
+	if err != nil {
+		panic(err.Error())
+	}
 }
